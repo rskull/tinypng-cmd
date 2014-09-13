@@ -1,7 +1,7 @@
 # tinypng ver 1.0
 
-    PNG画像圧縮サービス[tinypng](https://tinypng.com/) さんの[API](https://tinypng.com/developers) をコマンドで直感的に叩けるようにしました！
-    複数ファイルあるときはコレを使うと早いです。
+PNG画像圧縮サービス[tinypng](https://tinypng.com)さんの[API](https://tinypng.com/developers)をコマンドで直感的に叩けるようにしました！
+複数ファイルあるときはコレを使うと早いです。
 
 ## 事前準備
 
