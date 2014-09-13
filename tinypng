@@ -1,0 +1,116 @@
+#!/bin/bash
+
+# API key
+key='YOUR_API_KEY'
+
+# Request API
+api='https://api.tinypng.com/shrink'
+
+# initialize
+image=$1
+output=$2
+new_file=0
+
+# option
+while [ "$1" != "${1##[-+]}" ]; do
+
+    case $1 in
+
+        # all compress option
+        -a )
+
+            if [[ $output == '' ]]; then
+                output='./'
+            else
+                output=$3
+            fi
+
+            if [ -d $2 ] && [ -d $3 ]; then
+                ls $2 | grep \.png$ | xargs -P0 -iimg tinypng $2img $output
+            else
+                echo "${0##*/}: No such directory"
+            fi
+
+            exit 0 ;;
+
+        # check compress list
+        -c | --check )
+
+            if [ -d $2 ]; then
+                echo `ls $2 | grep .+\.png$`
+            else
+                echo "${0##*/}: ${2##*/}: No such directory"
+            fi
+
+            exit 0 ;;
+
+        # option error
+        * )
+
+            echo "${0##*/}: unknown option -- ${1#-}"
+            exit 0 ;;
+
+    esac
+
+done
+
+# not the png file
+if ! [ -f $image ] || ! [[ $image =~ .+\.png$ ]]; then
+    echo "${0##*/}: Not the png file"
+    exit 0
+fi
+
+# current directory
+if [[ $output == '' ]]; then
+
+    output='./'
+
+# output file
+elif [[ $output =~ .+[^\/]$ ]]; then
+
+    new_file=1
+    path=${output%/*}
+
+    if [[ $path =~ / ]] && ! [ -d $path ]; then
+        echo "${0##*/}: No such directory"
+        exit 0
+    fi
+
+# output directory
+elif ! [ -d $output ]; then
+
+    echo "${0##*/}: No such directory"
+    exit 0
+
+fi
+
+# requset api
+json=`curl -sS --user api:$key --data-binary @$image $api`
+
+# Error
+if [[ $json =~ '"error"' ]]; then
+
+    echo "$image  ----->  Error"
+
+# OK
+else
+
+    url=`echo $json | sed -e "s/.*\"url\":\"\(.\+\)\".*/\1/g"`
+    input_size=`echo $json | sed -e "s/.*\"input\":{\"size\":\([0-9]\+\).*/\1/g"`
+    output_size=`echo $json | sed -e "s/.*\"output\":{\"size\":\([0-9]\+\).*/\1/g"`
+    ratio=`echo $json | sed -e "s/.*\"ratio\":\(0.[0-9]\+\).*/\1/g"`
+    ratio=`echo "scale=5; (1 - $ratio) * 100" | bc | awk -F'.' '{print $1}'`
+
+    # output file or path
+    if [[ $new_file == 1 ]]; then
+        output_path="$output"
+    else
+        output_path="${output%/}/$image"
+    fi
+
+    # save file
+    curl -sS -o $output_path $url
+    echo "$image : $input_size B  ----->  $output_size B ($ratio%)"
+
+fi
+
