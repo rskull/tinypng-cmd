@@ -1,11 +1,11 @@
 # tinypng ver 1.0
 
-    PNG画像圧縮サービス[tinypng](https://tinypng.com/)さんの[API](https://tinypng.com/developers)をコマンドで直感的に叩けるようにしました！
+    PNG画像圧縮サービス[tinypng](https://tinypng.com/) さんの[API](https://tinypng.com/developers) をコマンドで直感的に叩けるようにしました！
     複数ファイルあるときはコレを使うと早いです。
 
 ## 事前準備
 
-まず[ここから](https://tinypng.com/developers) メールアドレスを登録を登録デベロッパー登録し、API keyを取得する必要があります。
+まず[ここから](https://tinypng.com/developers) デベロッパー登録し、API keyを取得する必要があります。
 メールアドレスを入力するだけで簡単に登録できます！
 なお無料版は月500リクエストまでだそうです。
 
